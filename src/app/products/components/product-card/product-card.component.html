@@ -1,0 +1,18 @@
+<div class="card bg-base-100 shadow-sm animate-fadeIn">
+  <figure>
+    <img
+      [src]="product().images | productImage"
+      [alt]="product().title"
+      class="w-full object-cover"
+     />
+  </figure>
+  <div class="card-body">
+    <a [routerLink]="['/product', product().slug]" class="card-title font-montserrat text-accent hover:underline">{{ product().title }}</a>
+    <p class="font-montserrat">{{ product().description | slice:0-70}} ...</p>
+    <div class="card-actions justify-end">     
+      <a [routerLink]="['/product', product().slug]" routerLinkActive="router-link-active"  class="btn btn-primary">
+        Ver articulo
+      </a>
+    </div>
+  </div>
+</div>

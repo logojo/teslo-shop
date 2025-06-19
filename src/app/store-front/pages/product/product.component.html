@@ -1,0 +1,17 @@
+@if(productResourse.isLoading()) {
+    <div class="flex justify-center items-center h-screen">
+        <span class="loading loading-bars loading-xl"></span>
+    </div>
+}
+
+@if(productResourse.hasValue()) {
+    <section class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <product-corousel [images]="productResourse.value().images" />
+        <div>
+            <h2 class="text-2xl text-primary font-montserrat">{{ productResourse.value().title }}</h2>
+            <div class="divider"></div>
+            <p>{{ productResourse.value().description }}</p>
+        </div>
+
+    </section>
+}

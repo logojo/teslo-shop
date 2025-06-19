@@ -1,0 +1,18 @@
+<h1 class="text-3xl font-bold font-montserrat">Todos los productos</h1>
+<h2 class="text-xl mb-5">Para todos los gustos</h2>
+
+@if(productsResources.isLoading()) {
+    <div class="flex justify-center items-center h-screen">
+        <span class="loading loading-bars loading-xl"></span>
+    </div>
+}
+
+@if(productsResources.hasValue()) {
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+  @for (product of productsResources.value().products; track product.id) {
+    <product-card [product]="product" />
+  }@empty {
+    <p class="text-primary">No hay productos</p>
+  }
+</section>
+}
