@@ -3,11 +3,13 @@
 
 @if(productsResources.isLoading()) {
     <div class="flex justify-center items-center h-screen">
-        <span class="loading loading-bars loading-xl"></span>
+        <span class="loading loading-bars loading-xl text-accent"></span>
     </div>
 }
 
 @if(productsResources.hasValue()) {
+
+
 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
   @for (product of productsResources.value().products; track product.id) {
     <product-card [product]="product" />
@@ -15,4 +17,10 @@
     <p class="text-primary">No hay productos</p>
   }
 </section>
+
+<app-pagination 
+  [pages]="productsResources.value().pages"
+  [currentPage]="paginationService.page()"
+/>
+
 }
