@@ -36,6 +36,15 @@
     </ul>
   </div>
   <div class="navbar-end">
-    <a class="btn">Button</a>
+    @if( authService.authStatus() === authStatus.authenticathed ) {
+         <button class="btn btn-ghost">{{ authService.user()?.fullName }}</button>
+         <button class="btn btn-sm btn-error" (click)="authService.logout()">Salir</button>
+    }
+    @else if( authService.authStatus() === authStatus.noAuthenticathed ) {
+         <a routerLink="/auth/login" class="btn btn-sm btn-accent">Ingresar</a>
+    }
+    @else {
+       <a class="btn btn-ghost">...</a>
+    }
   </div>
 </div>
