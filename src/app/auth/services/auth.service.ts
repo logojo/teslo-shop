@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { catchError, map, Observable, tap, of } from 'rxjs';
+import { catchError, map, Observable, of } from 'rxjs';
 
 import { User, AuthResponse, AuthStatus } from '@auth/interfaces/user.interface';
 import { environment } from 'src/environments/environment';
@@ -52,10 +52,19 @@ export class AuthService {
   }
 
   checkStatus() : Observable<boolean> {
+   
+    
      const token = localStorage.getItem('token');
      if( !token ) {
          return this.logout()
      }
+
+      console.log('Checking authentication status...');
+
+     //todo: implementar un tipo de cache envite que se este realizando 
+     //todo: la peticion al servidor cada vez que entre en un guard sino que revice si ya paso 5 minutos despues de la ultima verificacion
+     //todo: o verificar si el llamado a checkStatus procede de una recarga del navegador o de una rediccion a la pagina
+     
 
     return this.#http.get<AuthResponse>(`${this.#baseurl}/auth/check-status`)
               .pipe(

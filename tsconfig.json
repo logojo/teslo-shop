@@ -10,6 +10,7 @@
       "@products/*":["./src/app/products/*"],
       "@store-front/*":["./src/app/store-front/*"],
       "@admin/*":["./src/app/admin/*"],
+      "@utils/*":["./src/app/utils/*"],
     },
     "outDir": "./dist/out-tsc",
     "strict": true,

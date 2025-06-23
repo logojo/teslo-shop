@@ -1,0 +1,133 @@
+<h1 class="text-2xl font-bold">{{ product().title }}</h1>
+<div class="divider"></div>
+
+
+<form [formGroup]="productForm" 
+      (ngSubmit)="onSubmit()" 
+      class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+  <!-- Datos generales -->
+  <div class="flex flex-col gap-2">
+    <h2 class="text-2xl font-bold h-12">Datos generales</h2>
+    <input
+      type="text"
+      placeholder="Título"
+      class="input input-bordered w-full"
+      formControlName="title"
+      [class.border-red-500]="formUtils.isValidField(productForm, 'title')"
+    />
+    @if (formUtils.isValidField(productForm, 'title')) {
+        <span class="text-xs text-red-500">{{ formUtils.getFieldError(productForm, 'title') }}</span>
+    }
+
+    <input type="text" 
+          placeholder="Slug" 
+           class="input input-bordered w-full" 
+           formControlName="slug"
+           [class.border-red-500]="formUtils.isValidField(productForm, 'slug')" />
+    @if (formUtils.isValidField(productForm, 'slug')) {
+        <span class="text-xs text-red-500">{{ formUtils.getFieldError(productForm, 'slug') }}</span>
+    }
+
+    <textarea
+      class="textarea textarea-bordered"
+      placeholder="Descripción"
+      rows="6"
+      formControlName="description"
+      [class.border-red-500]="formUtils.isValidField(productForm, 'description')"
+    ></textarea>
+     @if (formUtils.isValidField(productForm, 'description')) {
+        <span class="text-xs text-red-500">{{ formUtils.getFieldError(productForm, 'description') }}</span>
+    }
+
+    <h2 class="text-lg font-bold">Datos de venta</h2>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+        <div>
+        <input
+            type="number"
+            placeholder="Precio"
+            class="input input-bordered w-full"
+            formControlName="price"
+            [class.border-red-500]="formUtils.isValidField(productForm, 'price')" 
+        />
+        @if (formUtils.isValidField(productForm, 'price')) {
+            <span class="text-xs text-red-500">{{ formUtils.getFieldError(productForm, 'price') }}</span>
+        }
+        </div>
+
+        <div>
+        <input
+            type="number"
+            placeholder="Inventario"
+            class="input input-bordered w-full"
+            formControlName="stock"
+        [class.border-red-500]="formUtils.isValidField(productForm, 'stock')" />
+        @if (formUtils.isValidField(productForm, 'stock')) {
+            <span class="text-xs text-red-500">{{ formUtils.getFieldError(productForm, 'stock') }}</span>
+        }
+        </div>
+    </div>
+
+    <!-- tags -->
+    <input type="text" placeholder="Tags" 
+           class="input input-bordered w-full" 
+           formControlName="tags"
+            [class.border-red-500]="formUtils.isValidField(productForm, 'tags')" />
+    @if (formUtils.isValidField(productForm, 'tags')) {
+        <span class="text-xs text-red-500">{{ formUtils.getFieldError(productForm, 'tags') }}</span>
+    }
+
+    <!-- Botones para el género -->
+    <div class="grid grid-cols-4 gap-2">
+      <!-- <button class="btn btn-sm btn-outline">Masculino</button> -->
+      <button type="button" 
+              [class.btn-primary]="productForm.value.gender === gender.Men" 
+              class="btn btn-sm"
+              (click)="productForm.patchValue({ gender: gender.Men })">Masculino
+       </button>
+      <button type="button" 
+              [class.btn-accent]="productForm.value.gender === gender.Women" 
+              class="btn btn-sm"
+              (click)="productForm.patchValue({ gender: gender.Women })">Femenino
+       </button>
+      <button type="button" 
+              [class.btn-warning]="productForm.value.gender === gender.Kid" 
+              class="btn btn-sm"
+              (click)="productForm.patchValue({ gender: gender.Kid })">Kids
+       </button>
+      <button type="button" 
+              [class.btn-secondary]="productForm.value.gender === gender.Unisex" 
+              class="btn btn-sm"
+              (click)="productForm.patchValue({ gender: gender.Unisex })">Unisex
+       </button>
+    </div>
+
+    <!-- Sizes -->
+    <div class="grid grid-cols-6 gap-2">
+      @for (size of sizes; track size) {
+      <button type="button" 
+              class="btn btn-sm"   
+              [class.btn-accent]="productForm.value.sizes.includes(size)"  
+              (click)="onSizeChange(size)">
+              {{ size }}
+      </button>
+      }     
+    </div>
+  </div>
+
+  <!-- Imágenes -->
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-end h-12">
+      <button class="btn btn-secondary" type="submit">
+        <!-- <span class="loading loading-spinner loading-sm"></span> -->
+
+        Guardar
+      </button>
+    </div>
+
+    <product-corousel [images]="product().images" />
+
+    <input type="file" class="file-input file-input-bordered w-full mt-4" />
+  </div>
+</form>
+

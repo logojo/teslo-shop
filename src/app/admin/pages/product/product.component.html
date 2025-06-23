@@ -1,0 +1,9 @@
+ @if ( product.isLoading()) {
+     <div class="flex justify-center items-center h-screen">
+         <span class="loading loading-bars loading-xl text-accent"></span>
+     </div>
+ }
+
+ @if ( product.hasValue()) {
+       <product-details [product]="product.value()" />
+ }

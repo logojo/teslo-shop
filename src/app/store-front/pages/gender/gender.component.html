@@ -16,8 +16,10 @@
   }
 </section>
 
-<app-pagination 
-  [pages]="productsResources.value().pages"
-  [currentPage]="paginationService.page()"
-/>
+<section class="mb-4">
+  <app-pagination 
+    [pages]="productsResources.value().pages"
+    [currentPage]="paginationService.page()"
+  />
+</section>
 }
