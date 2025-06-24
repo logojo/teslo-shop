@@ -111,7 +111,7 @@
               (click)="onSizeChange(size)">
               {{ size }}
       </button>
-      }     
+      }   
     </div>
   </div>
 
@@ -125,9 +125,22 @@
       </button>
     </div>
 
-    <product-corousel [images]="product().images" />
+    <product-corousel [images]="imagesToCaroucel()" />
 
-    <input type="file" class="file-input file-input-bordered w-full mt-4" />
+    <input type="file" 
+           multiple
+           accept="images/*"
+           class="file-input file-input-bordered w-full mt-4"
+           (change)="onFilesChange($event)" 
+           />
+
+    <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-2 mt-1">
+      @for (image of tempImages(); track image) {
+        <img [src]="image" class="h-24 w-full object-cover rounded-md animate-fadeIn" />
+      }
+    </div>
+
+
   </div>
 </form>
 

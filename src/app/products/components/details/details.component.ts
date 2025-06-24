@@ -1,4 +1,4 @@
-import { Component, effect, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input, signal } from '@angular/core';
 import { Gender, Product } from '@products/interfaces/product.interface';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -7,6 +7,7 @@ import { FormUtils } from '@utils/form-utils';
 import { ProductsService } from '@products/services/products.service';
 import { toast } from 'ngx-sonner';
 import { Router } from '@angular/router';
+import { switchMap } from 'rxjs';
 
 
 @Component({
@@ -15,6 +16,7 @@ import { Router } from '@angular/router';
   templateUrl: './details.component.html'
 })
 export class DetailsComponent {
+
   router = inject( Router );
   #fb = inject( FormBuilder);
   #productoService = inject( ProductsService );
@@ -23,6 +25,12 @@ export class DetailsComponent {
   sizes = ['XS','S', 'M', 'L', 'XL', 'XXL'];
   gender = Gender;
   formUtils = FormUtils;
+  tempImages = signal<string[]>([]);
+  fileImages: FileList | undefined = undefined;
+
+  imagesToCaroucel = computed(() => {
+    return [...this.product().images, ...this.tempImages()];
+  });
   
 
 
@@ -51,8 +59,17 @@ export class DetailsComponent {
     } else {
       this.productForm.patchValue({ sizes: [...sizes, size] });
     }
- 
   }
+
+  onFilesChange( event: Event) {
+    const files = (event.target as HTMLInputElement).files ?? undefined;
+    this.fileImages = files;
+    this.tempImages.set([]);
+    const temporalyImages = Array.from(files ?? []).map(file => URL.createObjectURL(file));
+    this.tempImages.set(temporalyImages);
+    
+  }
+
 
   onSubmit() {
     if (this.productForm.invalid) {
@@ -69,16 +86,16 @@ export class DetailsComponent {
             : formValues.tags
     };
 
-    if(this.product().id == 'new'){
-          this.#productoService.store( productData )
+    if(this.product().id == 'new') {
+          this.#productoService.store( productData,  this.fileImages )
               .subscribe(( product ) => {
                 this.router.navigate(['/admin/product', product.id])
                 toast.success('Producto creado');
           });
     }else {
       
-         this.#productoService.update( this.product().id, productData )
-             .subscribe(( product ) => {
+         this.#productoService.update( this.product().id, productData, this.fileImages )
+             .subscribe(() => {
                toast.success('Producto modificado');
           });
     }

@@ -1,19 +1,14 @@
-<div class="swiper" #swiperDiv>
-  <!-- Additional required wrapper -->
-  <div class="swiper-wrapper">
+<swiper-container init="false">
+
     @for (image of images(); track image) {
-        <div class="swiper-slide">
-              <img  [src]="image | productImage" alt="Producto" class="w-full object-cover animate-fadeIn"/>
-        </div>
-    }
-  </div>
-  <!-- If we need pagination -->
-  <div class="swiper-pagination"></div>
+      <swiper-slide>
+          <img  [src]="image | productImage" alt="Producto" class="w-full object-cover animate-fadeIn"/>
+      </swiper-slide>
 
-  <!-- If we need navigation buttons -->
-  <div class="swiper-button-prev"></div>
-  <div class="swiper-button-next"></div>
+    }@empty {
+      <swiper-slide>
+        <img  [src]="[] | productImage" alt="Producto" class="h-[60%] object-cover animate-fadeIn"/>
+      </swiper-slide>
+    }  
 
-  <!-- If we need scrollbar -->
-  <div class="swiper-scrollbar"></div>
-</div>
+</swiper-container>
