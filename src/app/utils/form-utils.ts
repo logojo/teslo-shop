@@ -42,11 +42,19 @@ export class FormUtils {
           return `No se puede usar el username de strider en la app`;
 
         case 'pattern':
-          if (errors['pattern'].requiredPattern === FormUtils.emailPattern) {
-            return 'El valor ingresado no luce como un correo electrónico';
-          }
-
-          return 'Error de patrón contra expresión regular';
+              if( errors['pattern'].requiredPattern === FormUtils.namePattern )
+                return `El campo debe de tener nombre y apellido`;
+              else if( errors['pattern'].requiredPattern === FormUtils.emailPattern )
+                 return `Debe ingresar un email valido`;
+              else if(errors['pattern'].requiredPattern === FormUtils.notOnlySpacesPattern) {
+                return `No debe de contener espacios`;
+              }else if(errors['pattern'].requiredPattern === FormUtils.slugPattern) {
+                return `El no debe tener espacios pero puede usar guiones`;
+              }else {
+                console.log(errors['pattern'].requiredPattern);
+                
+                return 'Error de expresión regular no controlado '
+              }
 
         default:
           return `Error de validación no controlado ${key}`;

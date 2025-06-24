@@ -13,20 +13,24 @@
 
 
     
-<div class="flex gap-2 items-center h-20">
-    <app-pagination 
-        [pages]="products.value()?.pages ?? 0"
-        [currentPage]="paginationService.page()"
-    />
+<div class="flex  justify-between items-center h-20">
+   <div class="flex gap-2">
+        <app-pagination 
+            [pages]="products.value()?.pages ?? 0"
+            [currentPage]="paginationService.page()"
+        />
 
-    <select class="select w-20"  
-            (change)="limit.set(+txtlimit.value)" 
-            #txtlimit>
-        <option value="10">10</option>
-        <option value="15">15</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-    </select>
+        <select class="select w-20"  
+                (change)="limit.set(+txtlimit.value)" 
+                #txtlimit>
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+        </select>
+   </div>
+
+   <a [routerLink]="['/admin/product/new']" routerLinkActive="router-link-active"  class="btn btn-primary">Agregar</a>
 </div>
 
 @if(products.isLoading()) {

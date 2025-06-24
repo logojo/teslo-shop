@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
+import { User } from '@auth/interfaces/user.interface';
 import { Gender, Product, ProductsResponse } from '@products/interfaces/product.interface';
 import { Observable, of, tap } from 'rxjs';
 import { environment } from 'src/environments/environment.development';
@@ -9,6 +10,20 @@ interface Options {
   limit?: number;
   offset?: number;
   gender?: Gender
+}
+
+const emptyProduct: Product = {
+  id: 'new',
+  title: '',
+  price: 0,
+  description: '',
+  slug: '',
+  stock: 0,
+  sizes: [],
+  gender: Gender.Men,
+  tags: [],
+  images: [],
+  user: {} as User 
 }
 
 @Injectable({
@@ -49,6 +64,10 @@ export class ProductsService {
   }
 
   getProductById( id: string ) : Observable<Product> {
+
+    if( id === 'new' ) {
+      return of( emptyProduct )
+    }
     
     if( this.productCache.has( id )) {
        return of( this.productCache.get(id)! );
@@ -57,5 +76,34 @@ export class ProductsService {
     return this.http.get<Product>(`${this.baseurl}/products/${id}`).pipe(
                 tap( res => this.productCache.set(id, res))
               );
+  }
+
+  store( product: Partial<Product>) : Observable<Product> {
+    return this.http.post<Product>(`${this.baseurl}/products`, product ).pipe(
+      tap( product => this.updateProductCache(product, false) )
+    );
+  }
+  update(id: string, product: Partial<Product>) : Observable<Product> {
+    return this.http.patch<Product>(`${this.baseurl}/products/${id}`, product ).pipe(
+      tap( product => this.updateProductCache(product) )
+    );
+  }
+
+  updateProductCache( product: Product, update =  true  ) {
+    this.productCache.set(product.id, product);
+
+    
+    //* Solo se ejecuta en la actualización ya que en la creacion no se encuentra encuentra el articulo en cache
+    if( update ) {
+      this.productsCache.forEach( productRespose => {
+
+        productRespose.products = productRespose.products.map((currectProducto) => {
+        return  currectProducto.id === product.id
+          ? product
+          : currectProducto
+        })
+      });
+    }
+
   }
 }

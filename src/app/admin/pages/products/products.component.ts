@@ -5,11 +5,11 @@ import { rxResource } from '@angular/core/rxjs-interop';
 
 import { PaginationComponent } from "../../../shared/components/pagination/pagination.component";
 import { PaginationService } from '@shared/services/pagination.service';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-products',
-  imports: [FormsModule, TableComponent, PaginationComponent],
+  imports: [ RouterLink, TableComponent, PaginationComponent],
   templateUrl: './products.component.html'
 })
 export class ProductsComponent {
@@ -17,7 +17,7 @@ export class ProductsComponent {
   paginationService =  inject( PaginationService );
 
 
-  limit = signal(5);
+  limit = signal(10);
 
   products = rxResource({
     request: () => ({ page: this.paginationService.page() -1, limit: this.limit() }),

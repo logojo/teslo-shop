@@ -39,7 +39,9 @@
 
     @if( authService.authStatus() === authStatus.authenticathed ) {
 
+        @if(authService.user()?.roles?.includes('admin')){
          <a routerLink="/admin" class="btn btn-ghost text-accent">Panel</a>
+        }
          <button class="btn btn-ghost">{{ authService.user()?.fullName }}</button>
          <button class="btn btn-sm btn-error" (click)="authService.logout()">Salir</button>
     }

@@ -4,6 +4,9 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 
 import { ProductCorouselComponent } from '../product-corousel/product-corousel.component';
 import { FormUtils } from '@utils/form-utils';
+import { ProductsService } from '@products/services/products.service';
+import { toast } from 'ngx-sonner';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -12,13 +15,16 @@ import { FormUtils } from '@utils/form-utils';
   templateUrl: './details.component.html'
 })
 export class DetailsComponent {
+  router = inject( Router );
+  #fb = inject( FormBuilder);
+  #productoService = inject( ProductsService );
 
   product = input.required<Product>();
   sizes = ['XS','S', 'M', 'L', 'XL', 'XXL'];
   gender = Gender;
   formUtils = FormUtils;
   
-  #fb = inject( FormBuilder);
+
 
   productForm : FormGroup = this.#fb.group({
     title: ['', [Validators.required]],
@@ -63,7 +69,20 @@ export class DetailsComponent {
             : formValues.tags
     };
 
-  console.log('Product Data:', productData);
+    if(this.product().id == 'new'){
+          this.#productoService.store( productData )
+              .subscribe(( product ) => {
+                this.router.navigate(['/admin/product', product.id])
+                toast.success('Producto creado');
+          });
+    }else {
+      
+         this.#productoService.update( this.product().id, productData )
+             .subscribe(( product ) => {
+               toast.success('Producto modificado');
+          });
+    }
+
   
     
   }
