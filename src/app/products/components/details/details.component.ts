@@ -7,7 +7,6 @@ import { FormUtils } from '@utils/form-utils';
 import { ProductsService } from '@products/services/products.service';
 import { toast } from 'ngx-sonner';
 import { Router } from '@angular/router';
-import { switchMap } from 'rxjs';
 
 
 @Component({
@@ -27,6 +26,7 @@ export class DetailsComponent {
   formUtils = FormUtils;
   tempImages = signal<string[]>([]);
   fileImages: FileList | undefined = undefined;
+  loading = false;
 
   imagesToCaroucel = computed(() => {
     return [...this.product().images, ...this.tempImages()];
@@ -70,12 +70,13 @@ export class DetailsComponent {
     
   }
 
-
   onSubmit() {
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
       return;
     } 
+
+    this.loading = true;
 
     const formValues = this.productForm.value;
 
@@ -91,12 +92,14 @@ export class DetailsComponent {
               .subscribe(( product ) => {
                 this.router.navigate(['/admin/product', product.id])
                 toast.success('Producto creado');
+                 this.loading = false;
           });
     }else {
       
          this.#productoService.update( this.product().id, productData, this.fileImages )
              .subscribe(() => {
                toast.success('Producto modificado');
+               this.loading = false;
           });
     }
 

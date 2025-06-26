@@ -15,6 +15,7 @@ export class AuthService {
   #token = signal<string|null>(localStorage.getItem('token'));
   #http = inject( HttpClient );
   #baseurl = environment.baseurl;
+  #lastCheckTime = signal<number | null>(null);
 
   authStatus = computed<AuthStatus>(() => {
     if( this.#authStatus() === AuthStatus.checking ) {
@@ -51,6 +52,16 @@ export class AuthService {
     );
   }
 
+  //* Funcion que revisa peticiones innecesaria al api
+  private isCheckStatusValid(): boolean {
+    const lastChecked = this.#lastCheckTime();
+    if ( !lastChecked ) return false;
+
+    const now = Date.now();
+    const oneHourInMs = 1000 * 60 * 60;
+    return now - lastChecked < oneHourInMs;
+  }
+
   checkStatus() : Observable<boolean> {
    
     
@@ -59,16 +70,17 @@ export class AuthService {
          return this.logout()
      }
 
-      console.log('Checking authentication status...');
-
-     //todo: implementar un tipo de cache envite que se este realizando 
-     //todo: la peticion al servidor cada vez que entre en un guard sino que revice si ya paso 5 minutos despues de la ultima verificacion
-     //todo: o verificar si el llamado a checkStatus procede de una recarga del navegador o de una rediccion a la pagina
+     if (this.isCheckStatusValid() && this.#user()) {
+        return of(true);
+      }
      
 
     return this.#http.get<AuthResponse>(`${this.#baseurl}/auth/check-status`)
               .pipe(
-                map((res) => this.handleAuthSuccess( res ) ),
+                map((res) => {
+                  this.#lastCheckTime.set(Date.now());
+                  return this.handleAuthSuccess( res )
+                } ),
                 catchError((error: any) => this.logout() )
               );
   }
@@ -77,6 +89,7 @@ export class AuthService {
     this.#user.set(null);
     this.#token.set(null);
     this.#authStatus.set(AuthStatus.noAuthenticathed);
+    this.#lastCheckTime.set(null);
     localStorage.clear()
     return of( false )
   }

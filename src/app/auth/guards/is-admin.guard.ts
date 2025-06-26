@@ -6,7 +6,7 @@ import { firstValueFrom } from 'rxjs';
 export const isAdminGuard: CanMatchFn = async (route, segments) => {
  const authService = inject( AuthService );
 
- await firstValueFrom( authService.checkStatus() );
+ await firstValueFrom( authService.checkStatus() ); 
 
   if ( authService.user()?.roles.includes('admin') ) 
        return true;
